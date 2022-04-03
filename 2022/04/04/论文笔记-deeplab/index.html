@@ -216,14 +216,14 @@
 <p> 基于此，DCNN在图像标记任务中存在的技术障碍主要是：</p>
 <h3 id="1-下采样导致的分辨率下降"><a href="#1-下采样导致的分辨率下降" class="headerlink" title="1.下采样导致的分辨率下降"></a>1.下采样导致的分辨率下降</h3><p>DCNN中重复的池化与下采样使得图像的分辨率下降，导致了细节的丢失</p>
 <h3 id="2-空间不敏感性"><a href="#2-空间不敏感性" class="headerlink" title="2.空间不敏感性"></a>2.空间不敏感性</h3><p>DCNN的平移不变性使得空间的位置变得不准确</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="空洞卷积"><a href="#空洞卷积" class="headerlink" title="空洞卷积"></a>空洞卷积</h3><p>对于问题一，文章提出的解决方案是空洞卷积<br><img src="/./2022-4-1-1.jpeg"><br><img src="/./2022-4-1-2.jpeg"></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="空洞卷积"><a href="#空洞卷积" class="headerlink" title="空洞卷积"></a>空洞卷积</h3><p>对于问题一，文章提出的解决方案是空洞卷积<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-1.jpeg"><br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-2.jpeg"></p>
 <p>即在卷积核参数之间填充0，目的是扩大网络的感受野大小，以此代替池化与下采样，使分辨率上升，而由于填充的是0，并不会产生新的参数</p>
 <p>具体操作是：在VGG网络中最后两个最大池化层之的步长改为1以保证分辨率，并通过引入零增加了卷积层的长度（在最后三个卷积层中为2×，在第一个完全连接层为4×）以保持感受野。使得score map更为密集（1&#x2F;32到1&#x2F;8）</p>
 <h3 id="关于感受野的计算"><a href="#关于感受野的计算" class="headerlink" title="关于感受野的计算"></a>关于感受野的计算</h3><p>感知野计算由输入层后的第一层开始依次往后计算<br>第一层卷积层的输出特征图像素的感受野的大小等于滤波器的大小</p>
-<p>感受野计算公式<br><img src="/./2022-4-1-3.png"><br>Sn为前n层步长，s为这一层步长，kn表示卷积核大小<br>引入空洞卷积后，ßkn的计算公式为<br><img src="/./2022-4-1-4.png"></p>
-<p>以VGG16为例，计算感知野<br><img src="/./2022-4-1-7.png"></p>
-<p>使用空洞卷积前<br><img src="/./2022-4-1-5.png"></p>
-<p>使用空洞卷积后<br><img src="/./2022-4-1-6.png"><br>最后得到的感受野大小相同，这也使得可以使用VGG-16的训练好了的权重进行初始化</p>
+<p>感受野计算公式<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-3.png"><br>Sn为前n层步长，s为这一层步长，kn表示卷积核大小<br>引入空洞卷积后，ßkn的计算公式为<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-4.png"></p>
+<p>以VGG16为例，计算感知野<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-7.png"></p>
+<p>使用空洞卷积前<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-5.png"></p>
+<p>使用空洞卷积后<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-6.png"><br>最后得到的感受野大小相同，这也使得可以使用VGG-16的训练好了的权重进行初始化</p>
 <h3 id="CRF"><a href="#CRF" class="headerlink" title="CRF"></a>CRF</h3><p>文章采用超像素表示，实质上是将定位任务委托给低级分割方法，通过耦合DCNN的识别能力和完全连接的CRF的细粒度定位精度来恢复对象边界。以解决大感受野与不变形带来的位置问题</p>
 <p>由于在deeplabV3后就将这一部分舍弃了，加之我在传统ml领域知识的贫乏（会补的会补的别骂了别骂了），所以对于这一部分并未深究，留待之后学习条件随机场时再做考量。</p>
 <h2 id="方法验证"><a href="#方法验证" class="headerlink" title="方法验证"></a>方法验证</h2><h3 id="experiment"><a href="#experiment" class="headerlink" title="experiment"></a>experiment</h3><p>DeepLab由DCNN和CRF组成，训练策略是分段训练，即DCNN的输出是CRF的一元势函数，在训练CRF时是固定的。在对DCNN做了fine-tune后，对CRF做交叉验证</p>
@@ -259,22 +259,22 @@
 <td>0.9的动量， 0.0005的衰减</td>
 </tr>
 </tbody></table>
-<p>结果<br><img src="/./2022-4-1-8.png"></p>
-<p>视觉表现<br><img src="/./2022-4-1-9.png"></p>
+<p>结果<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-8.png"></p>
+<p>视觉表现<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-9.png"></p>
 <p>与其他先进模型相比，DeepLab捕获到了更细节的边界。</p>
 <h1 id="deeplab-V2"><a href="#deeplab-V2" class="headerlink" title="deeplab V2"></a>deeplab V2</h1><p>由deeplab改进而来，在此基础上提出了新的问题与解决方案</p>
 <h2 id="新的问题"><a href="#新的问题" class="headerlink" title="新的问题"></a>新的问题</h2><p>在多尺度上存在物体。解决这一问题有一个标准方法是将一张图片缩放不同版本，汇总特征或最终预测得到结果，实验表明能提高系统的性能，但这个增加了计算特征响应，需要大量的存储空间。</p>
 <p>关于这个问题，我的理解是，这在本质上与deep V1的问题二是相同得，都是由感受野过大与空间不变形带来的问题</p>
-<h2 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="ASSP-空间金字塔池化"><a href="#ASSP-空间金字塔池化" class="headerlink" title="ASSP 空间金字塔池化"></a>ASSP 空间金字塔池化</h3><p><img src="/./2022-4-3-1.png"></p>
+<h2 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="ASSP-空间金字塔池化"><a href="#ASSP-空间金字塔池化" class="headerlink" title="ASSP 空间金字塔池化"></a>ASSP 空间金字塔池化</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-1.png"></p>
 <p>受SPPNet中SPP模块的的启发，它指出在任意尺度的区域，可以用从单个尺度图像中进行重采样提取的卷积特征进行准确有效地分类。ASSP用不同采样率的多个并行的空洞卷积实现了他们的方案的一个变体。并行的采用多个采样率的空洞卷积提取特征，再将特征融合，类似于空间金字塔结构。以此解决多尺度物体的问题</p>
 <h2 id="方法验证-1"><a href="#方法验证-1" class="headerlink" title="方法验证"></a>方法验证</h2><p>LargeFOV是指采用膨胀速率r&#x3D;12的膨胀卷积策略，作者在VGG-16的fc6采用该膨胀卷积，并将fc7和fc8改为1x1的全卷积，命名为DeepLab-LargeFOV</p>
 <p>作为对比，同时在VGG-16的fc6-fc8层用四路采用不同膨胀速率的膨胀卷积作用于各自的fc6，在fc7和fc8同样采用全卷积策略，命名为DeepLab-ASPP，根据膨胀卷积r的不同组合，r&#x3D;{2,4,8,12}的称为DeepLab-ASPP-S，r&#x3D;{6,12,18,24}的称为DeepLab-ASPP-L，如下图分别为VGG16上的DeepLab-LargeFOV和DeepLab-ASPP示意图：</p>
-<p><img src="/./2022-4-3-2.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-2.png"></p>
 <h1 id="deeplab-V3"><a href="#deeplab-V3" class="headerlink" title="deeplab V3"></a>deeplab V3</h1><h2 id="问题分析-1"><a href="#问题分析-1" class="headerlink" title="问题分析"></a>问题分析</h2><p>V3中，作者将V1中的第二个问题删去，只留下了两个问题</p>
 <ul>
 <li>1.<strong>下采样导致的分辨率下降</strong>，对此，前置论文提出的解决方案是Dilated&#x2F;Atrous Convolution</li>
 </ul>
-<p><img src="/./2022-4-3-3.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-3.png"></p>
 <ul>
 <li><p>2.<strong>多尺度物体</strong>，如上图，对于此，文中将解决方案分为四类</p>
 <ul>
@@ -287,56 +287,56 @@
 <p>3x3的卷积核中有效权重与膨胀率的对应如下：</p>
 </li>
 </ul>
-<p><img src="/./2022-4-3-4.png"></p>
-<h2 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="Going-Deeper-with-Atrous-Convolution"><a href="#Going-Deeper-with-Atrous-Convolution" class="headerlink" title="Going Deeper with Atrous Convolution"></a>Going Deeper with Atrous Convolution</h3><p><img src="/./2022-4-3-5.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-4.png"></p>
+<h2 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="Going-Deeper-with-Atrous-Convolution"><a href="#Going-Deeper-with-Atrous-Convolution" class="headerlink" title="Going Deeper with Atrous Convolution"></a>Going Deeper with Atrous Convolution</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-5.png"></p>
 <p>论文中使用3个3x3的卷积组成的block来作为resnet中basic block（<em>PS：如何将串联用于bottleneck block？</em>），对于每一个block里面的3个卷积层的rate的设置是不同的，文章设置了一个基准系数Multi Grid &#x3D; (1, 2, 4)，对应每一个Block，它的三个卷积层的rate&#x3D;rate_for_block * (1, 2, 4)，<strong>基准系数可以自行设置</strong>。</p>
 <h4 id="Gridding-Effect-amp-Hybrid-Dilated-Convolution-HDC"><a href="#Gridding-Effect-amp-Hybrid-Dilated-Convolution-HDC" class="headerlink" title="Gridding Effect &amp; Hybrid Dilated Convolution (HDC)"></a>Gridding Effect &amp; Hybrid Dilated Convolution (HDC)</h4><p>扯一些题外话，关于基准系数，有一些需要考虑的问题.</p>
 <h5 id="1-Gridding-Effect"><a href="#1-Gridding-Effect" class="headerlink" title="1.Gridding Effect"></a>1.Gridding Effect</h5><p>假设我们仅仅多次叠加 dilation rate 2 的 3x3 kernel 的话，则会出现这个问题</p>
-<p><img src="/./2022-4-3-6.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-6.png"></p>
 <p>可以发现此时的 kernel 并不连续，也就是并不是所有的 pixel 都用来计算了，因此这里将信息看做 checker-board 的方式会损失信息的连续性。这对 pixel-level dense prediction 的任务来说是致命的。</p>
 <h5 id="2：Long-ranged-information-might-be-not-relevant"><a href="#2：Long-ranged-information-might-be-not-relevant" class="headerlink" title="2：Long-ranged information might be not relevant."></a>2：Long-ranged information might be not relevant.</h5><p>我们从 dilated convolution 的设计背景来看就能推测出这样的设计是用来获取 long-ranged information。然而光采用大 dilation rate 的信息或许只对一些大物体分割有效果，而对小物体来说可能则有弊无利了。如何同时处理不同大小的物体的关系，则是设计好 dilated convolution 网络的关键。</p>
 <h5 id="HDC"><a href="#HDC" class="headerlink" title="HDC"></a>HDC</h5><p>对于这些问题，图森组的文章对其提出了较好的解决的方法。他们设计了一个称之为 HDC 的设计结构。其具有以下特性</p>
 <ul>
 <li>叠加卷积的 dilation rate 不能有大于1的公约数。比如 [2, 4, 6] 则不是一个好的三层卷积，依然会出现 gridding effect。</li>
 <li>将 dilation rate 设计成 锯齿状结构，例如 [1, 2, 5, 1, 2, 5] 循环结构</li>
-<li>需要满足以下式子：<br> <img src="/./2022-4-3-7.svg"><br> 其中 ri 是 i 层的 dilation rate 而 Mi 是指在 i 层的最大dilation rate，那么假设总共有n层的话，默认 Mn &#x3D; Rn 。假设我们应用于 kernel 为 k x k 的话，我们的目标则是 M2 &lt;&#x3D; k ，这样我们至少可以用 dilation rate 1 即 standard convolution 的方式来覆盖掉所有洞。</li>
+<li>需要满足以下式子：<br> <img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-7.svg"><br> 其中 ri 是 i 层的 dilation rate 而 Mi 是指在 i 层的最大dilation rate，那么假设总共有n层的话，默认 Mn &#x3D; Rn 。假设我们应用于 kernel 为 k x k 的话，我们的目标则是 M2 &lt;&#x3D; k ，这样我们至少可以用 dilation rate 1 即 standard convolution 的方式来覆盖掉所有洞。</li>
 </ul>
 <p>一个简单的例子:  dilation rate [1, 2, 5] with 3 x 3 kernel </p>
-<p><img src="/./2022-4-3-8.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-8.png"></p>
 <p>而这样的锯齿状本身的性质就比较好的来同时满足小物体大物体的分割要求(小 dilation rate 来关心近距离信息，大 dilation rate 来关心远距离信息)。</p>
 <h3 id="Atrous-Spatial-Pyramid-Pooling"><a href="#Atrous-Spatial-Pyramid-Pooling" class="headerlink" title="Atrous Spatial Pyramid Pooling"></a>Atrous Spatial Pyramid Pooling</h3><p>随着空洞卷积膨胀率越大，卷积核中的有效权重越少，当膨胀率足够大时，只有卷积核最中间的权重有效，即退化成了1x1卷积核，并不能获取到全局的context信息。</p>
 <p>为了解决此问题，V3在ASPP中添加了Image-Level 图像级别的特征，对于输入进来的特征图的每一个通道做全局平均池化，然后再通过256个1 * 1的卷积核构成新的(1, 1, 256)的特征图(b)，然后通过双线性插值得到需要的分辨率的图,以弥补rate太大的时候丢失的信息。</p>
 <p>(a)中计算了多个不同的空洞卷积，卷积之后都跟了对应的BN层（这对于训练很重要）。最后将(a)和(b)进行拼接，通过256个1 * 1 的卷积核，得到新的特征图。</p>
-<p><img src="/./2022-4-3-9.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-9.png"></p>
 <h2 id="方法验证-2"><a href="#方法验证-2" class="headerlink" title="方法验证"></a>方法验证</h2><h4 id="Training-Protocol"><a href="#Training-Protocol" class="headerlink" title="Training Protocol"></a>Training Protocol</h4><blockquote>
-<p><strong>学习率策略</strong>：ploy <img src="/./2022-4-3-10.svg"><br>  <strong>裁剪尺寸</strong>：513*513<br>  <strong>批归一化</strong><br>  <strong>上采样策略</strong><br>  <strong>采用缩放翻转进行数据增强</strong></p>
+<p><strong>学习率策略</strong>：ploy <img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-10.svg"><br>  <strong>裁剪尺寸</strong>：513*513<br>  <strong>批归一化</strong><br>  <strong>上采样策略</strong><br>  <strong>采用缩放翻转进行数据增强</strong></p>
 </blockquote>
 <h3 id="对于深度空洞卷积的试验"><a href="#对于深度空洞卷积的试验" class="headerlink" title="对于深度空洞卷积的试验"></a>对于深度空洞卷积的试验</h3><p>逐渐增加模块数量效果越来越好</p>
-<p><img src="/./2022-4-3-11.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-11.png"></p>
 <p>不同的Multi Grid基准系数（ResNet101）</p>
-<p><img src="/./2022-4-3-12.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-12.png"></p>
 <h3 id="ASPP"><a href="#ASPP" class="headerlink" title="ASPP"></a>ASPP</h3><p>联合调整rate以及Image-Pooling</p>
-<p><img src="/./2022-4-3-13.png"></p>
-<h1 id="deeplab-V3-1"><a href="#deeplab-V3-1" class="headerlink" title="deeplab V3+"></a>deeplab V3+</h1><h2 id="主要改进"><a href="#主要改进" class="headerlink" title="主要改进"></a>主要改进</h2><h4 id="提出基于deeplab-v3的encode-decode结构"><a href="#提出基于deeplab-v3的encode-decode结构" class="headerlink" title="提出基于deeplab v3的encode-decode结构"></a>提出基于deeplab v3的encode-decode结构</h4><p><img src="/./2022-4-3-14.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-13.png"></p>
+<h1 id="deeplab-V3-1"><a href="#deeplab-V3-1" class="headerlink" title="deeplab V3+"></a>deeplab V3+</h1><h2 id="主要改进"><a href="#主要改进" class="headerlink" title="主要改进"></a>主要改进</h2><h4 id="提出基于deeplab-v3的encode-decode结构"><a href="#提出基于deeplab-v3的encode-decode结构" class="headerlink" title="提出基于deeplab v3的encode-decode结构"></a>提出基于deeplab v3的encode-decode结构</h4><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-14.png"></p>
 <p>如上图所示，作者把spatial pyramid pooling module和Encoder-Decoder融合成一体，原DeepLabv3当作encoder，添加decoder得到新的模型（DeepLabv3+）。</p>
-<p><img src="/./2022-4-3-15.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-15.png"></p>
 <p><strong>需要注意</strong>：融合低层次信息前，先进行1x1的卷积，目的是降通道，这个时候要让low-level feature map在concat后的总特征图中占比小，因为它的语义信息太少了，所以接1*1的低维conv</p>
 <h4 id="用modify-xception作为backbone"><a href="#用modify-xception作为backbone" class="headerlink" title="用modify xception作为backbone"></a>用modify xception作为backbone</h4><blockquote>
 <p>具体结构参照下图。和原来的xception不一样的地方有三，一是Middle flow重复了16次，ori xception是8次，也就是用了more layers；二是pooling均换为了dw+pw+s&#x3D;2，本人在很多网络也实验过，把pool换成conv或者合并到现有的卷积层，均能提高一定的map。在Entry flow中stride &#x3D;16，所以训练的时候需要把Exit flow的stride&#x3D;2换为rate&#x3D;2的dilation conv（Middle不改变resolution）（train_os&#x3D;16），因此后面的层也都是rate&#x3D;2，这又导致The Gridding Effect，然而论文4.3中说明了这个地方用HDC思想并不会带来提升，因此保留了一系列的rate&#x3D;2；三是在所有的dw层后面加上了BN和relu。</p>
 </blockquote>
 <p>此处由于对xception网络了解不多，留待之后考量</p>
 <h5 id="Depthwise-separable-convolution"><a href="#Depthwise-separable-convolution" class="headerlink" title="Depthwise separable convolution"></a>Depthwise separable convolution</h5><h5 id="常规卷积运算"><a href="#常规卷积运算" class="headerlink" title="常规卷积运算"></a>常规卷积运算</h5><p>假设输入层为一个大小为64×64像素、三通道彩色图片。经过一个包含4个Filter的卷积层，最终输出4个Feature Map，且尺寸与输入层相同。整个过程可以用下图来概括。</p>
-<p><img src="/./2022-4-3-17.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-17.png"></p>
 <p>此时，卷积层共4个Filter，每个Filter包含了3个Kernel，每个Kernel的大小为3×3。因此卷积层的参数数量可以用如下公式来计算：</p>
 <p><strong>N_std &#x3D; 4 × 3 × 3 × 3 &#x3D; 108</strong></p>
 <h5 id="Separable-Convolution"><a href="#Separable-Convolution" class="headerlink" title="Separable Convolution"></a>Separable Convolution</h5><p>Separable Convolution在Google的Xception以及MobileNet论文中均有描述。它的核心思想是将一个完整的卷积运算分解为两步进行，分别为Depthwise Convolution与Pointwise Convolution。</p>
 <h6 id="Depthwise-Convolution"><a href="#Depthwise-Convolution" class="headerlink" title="Depthwise Convolution"></a>Depthwise Convolution</h6><p>同样是上述例子，一个大小为64×64像素、三通道彩色图片首先经过第一次卷积运算，不同之处在于此次的卷积完全是在二维平面内进行，且Filter的数量与上一层的Depth相同。所以一个三通道的图像经过运算后生成了3个Feature map，如下图所示。</p>
-<p><img src="/./2022-4-3-18.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-18.png"></p>
 <p>其中一个Filter只包含一个大小为3×3的Kernel，卷积部分的参数个数计算如下：</p>
 <p><strong>N_depthwise &#x3D; 3 × 3 × 3 &#x3D; 27</strong></p>
 <p>Depthwise Convolution完成后的Feature map数量与输入层的depth相同，但是这种运算对输入层的每个channel独立进行卷积运算后就结束了，没有有效的利用不同map在相同空间位置上的信息。因此需要增加另外一步操作来将这些map进行组合生成新的Feature map，即接下来的Pointwise Convolution。</p>
 <h6 id="Pointwise-Convolution"><a href="#Pointwise-Convolution" class="headerlink" title="Pointwise Convolution"></a>Pointwise Convolution</h6><p>Pointwise Convolution的运算与常规卷积运算非常相似，不同之处在于卷积核的尺寸为 1×1×M，M为上一层的depth。所以这里的卷积运算会将上一步的map在深度方向上进行加权组合，生成新的Feature map。有几个Filter就有几个Feature map。如下图所示。</p>
-<p><img src="/./2022-4-3-19.png"></p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-19.png"></p>
 <p>由于采用的是1×1卷积的方式，此步中卷积涉及到的参数个数可以计算为：</p>
 <p><strong>N_pointwise &#x3D; 1 × 1 × 3 × 4 &#x3D; 12</strong></p>
 <p>经过Pointwise Convolution之后，同样输出了4张Feature map，与常规卷积的输出维度相同。</p>
@@ -345,10 +345,10 @@
 <p>Separable Convolution的参数由两部分相加得到：</p>
 <p><strong>N_depthwise &#x3D; 3 × 3 × 3 &#x3D; 27</strong><br><strong>N_pointwise &#x3D; 1 × 1 × 3 × 4 &#x3D; 12</strong><br><strong>N_separable &#x3D; N_depthwise + N_pointwise &#x3D; 39</strong></p>
 <p>相同的输入，同样是得到4张Feature map，Separable Convolution的参数个数是常规卷积的约1&#x2F;3。因此，在参数量相同的前提下，采用Separable Convolution的神经网络层数可以做的更深。</p>
-<h2 id="方法验证-3"><a href="#方法验证-3" class="headerlink" title="方法验证"></a>方法验证</h2><h4 id="1-decoder结构"><a href="#1-decoder结构" class="headerlink" title="1.decoder结构"></a>1.decoder结构</h4><h5 id="低层次信息通道数多少个比较合适（1x1卷积的通道数）"><a href="#低层次信息通道数多少个比较合适（1x1卷积的通道数）" class="headerlink" title="低层次信息通道数多少个比较合适（1x1卷积的通道数）"></a>低层次信息通道数多少个比较合适（1x1卷积的通道数）</h5><p><img src="/./2022-4-3-20.png"></p>
-<h5 id="哪个底层的细节信息较好-amp-3x3的卷积如何构成"><a href="#哪个底层的细节信息较好-amp-3x3的卷积如何构成" class="headerlink" title="哪个底层的细节信息较好&amp;3x3的卷积如何构成"></a>哪个底层的细节信息较好&amp;3x3的卷积如何构成</h5><p><img src="/./2022-4-3-21.png"><br>作者验证了U-Net和SegNet类似的解码结构在此网络上并没有多少提升</p>
-<h4 id="2-odify-xception作为backbone"><a href="#2-odify-xception作为backbone" class="headerlink" title="2.odify xception作为backbone"></a>2.odify xception作为backbone</h4><h5 id="Backbone为Resnet101"><a href="#Backbone为Resnet101" class="headerlink" title="Backbone为Resnet101"></a>Backbone为Resnet101</h5><p><img src="/./2022-4-3-22.png"></p>
-<h5 id="Backbone为Xception"><a href="#Backbone为Xception" class="headerlink" title="Backbone为Xception"></a>Backbone为Xception</h5><p><img src="/./2022-4-3-23.png"></p>
+<h2 id="方法验证-3"><a href="#方法验证-3" class="headerlink" title="方法验证"></a>方法验证</h2><h4 id="1-decoder结构"><a href="#1-decoder结构" class="headerlink" title="1.decoder结构"></a>1.decoder结构</h4><h5 id="低层次信息通道数多少个比较合适（1x1卷积的通道数）"><a href="#低层次信息通道数多少个比较合适（1x1卷积的通道数）" class="headerlink" title="低层次信息通道数多少个比较合适（1x1卷积的通道数）"></a>低层次信息通道数多少个比较合适（1x1卷积的通道数）</h5><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-20.png"></p>
+<h5 id="哪个底层的细节信息较好-amp-3x3的卷积如何构成"><a href="#哪个底层的细节信息较好-amp-3x3的卷积如何构成" class="headerlink" title="哪个底层的细节信息较好&amp;3x3的卷积如何构成"></a>哪个底层的细节信息较好&amp;3x3的卷积如何构成</h5><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-21.png"><br>作者验证了U-Net和SegNet类似的解码结构在此网络上并没有多少提升</p>
+<h4 id="2-odify-xception作为backbone"><a href="#2-odify-xception作为backbone" class="headerlink" title="2.odify xception作为backbone"></a>2.odify xception作为backbone</h4><h5 id="Backbone为Resnet101"><a href="#Backbone为Resnet101" class="headerlink" title="Backbone为Resnet101"></a>Backbone为Resnet101</h5><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-22.png"></p>
+<h5 id="Backbone为Xception"><a href="#Backbone为Xception" class="headerlink" title="Backbone为Xception"></a>Backbone为Xception</h5><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-3-23.png"></p>
 <h3 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h3><p>由于受限于对xception的一定程度上的陌生，我对deeplab V3+的理解并不如deeplab V1-V3细致，待理解xception后仍需重新钻研</p>
 
         </div>
