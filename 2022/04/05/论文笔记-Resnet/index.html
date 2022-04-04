@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HLK">
+
+
+
+
+
+<title>论文笔记-deeplab | Secret Garden</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Hexi&#39;s Secret Garden</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Hexi&#39;s Secret Garden</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">论文笔记-deeplab</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HLK</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 5, 2022&nbsp;&nbsp;4:12:30</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="论文笔记-Resnet"><a href="#论文笔记-Resnet" class="headerlink" title="论文笔记-Resnet"></a>论文笔记-Resnet</h1><h1 id="Resnet"><a href="#Resnet" class="headerlink" title="Resnet"></a>Resnet</h1><h2 id="现有问题"><a href="#现有问题" class="headerlink" title="现有问题"></a>现有问题</h2><h3 id="Degradation-problem"><a href="#Degradation-problem" class="headerlink" title="Degradation problem"></a>Degradation problem</h3><p>网络的深度是网络极为重要的，网络层数越深，网络就可以进行更为复杂的特征模式提取与模拟更复杂的函数，但网络的精度却并不一定随着深度的加深而变好，甚至经常与之相反</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-1.png"></p>
+<p>实验发现深度网络出现了退化问题（Degradation problem）：网络深度增加时，网络准确度出现饱和，甚至出现下降。如上图：56层的网络要差于20层的网络。对于此，作者有以下认识</p>
+<ul>
+<li>这不是过拟合问题，因为56层网络的训练误差同样高。</li>
+<li>深层网络存在着梯度消失或者爆炸的问题，这使得深度学习模型很难训练。但是现在已经存在一些技术手段如BatchNorm已经缓解这个问题。</li>
+</ul>
+<p>所以，导致退化问题（Degradation problem）的最大问题是网络的结构</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>深度网络的退化问题至少说明深度网络不容易训练。而可以想到的是，如果有一个浅层网络，你想通过向上堆积新层来建立深层网络，一个极端情况是这些增加的层什么也不学习，仅仅复制浅层网络的特征，即这样新层是恒等映射（Identity mapping）。在这种情况下，深层网络应该至少和浅层网络性能一样，也不应该出现退化现象。（我还蛮好奇那一个训练好了的网络再加几层然后二次训练的效果是什么样的）</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-2.png"></p>
+<p>作者依此提出了残差学习，对于一个堆积层结构（几层堆积而成）当输入为x 时其学习到的特征记为 H(x) ，现在我们希望其可以学习到残差 F(x) &#x3D; H(x) - x，这样其实原始的学习特征是 F(x) + x 。之所以这样是因为残差学习相比原始特征直接学习更容易。让残差变为0也比让那些新堆叠进去的非线性的层的权重都变为1要容易的多。当残差为0时，此时堆积层仅仅做了恒等映射，至少网络性能不会下降，实际上残差不会为0，这也会使得堆积层在输入特征基础上学习到新的特征，从而拥有更好的性能。残差学习的结构如图4所示。这有点类似与电路中的“短路”，所以是一种短路连接（shortcut connection）。</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-3.png"></p>
+<h3 id="what-is-the-question"><a href="#what-is-the-question" class="headerlink" title="what is the question"></a>what is the question</h3><p>ResNet是如此简洁高效，以至于模型提出后还有无数论文讨论“ResNet到底解决了什么问题“</p>
+<h4 id="减少梯度相关性的衰减"><a href="#减少梯度相关性的衰减" class="headerlink" title="减少梯度相关性的衰减"></a>减少梯度相关性的衰减</h4><p>《The Shattered Gradients Problem: If resnets are the answer, then what is the question?》认为，即使BN过后梯度的模稳定在了正常范围内，但梯度的相关性实际上是随着层数增加持续衰减的。而经过证明，ResNet可以有效减少这种相关性的衰减。对于 L 层的网络来说，没有残差表示的Plain Net梯度相关性的衰减在 <img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-12.svg"> ，而ResNet的衰减却只有 <img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-13.svg">  。这也验证了ResNet论文本身的观点，网络训练难度随着层数增长的速度不是线性，而至少是多项式等级的增长（甚至可能是指数级增长的）</p>
+<h4 id="跳连接以实现实现不同分辨率特征的组合"><a href="#跳连接以实现实现不同分辨率特征的组合" class="headerlink" title="跳连接以实现实现不同分辨率特征的组合"></a>跳连接以实现实现不同分辨率特征的组合</h4><p>Feature Pyramid Network提出跳连接相加可以实现不同分辨率特征的组合(在U-net，FCN中均有体现)，浅层容易有高分辨率但是低级语义的特征，而深层的特征有高级语义，但分辨率很低。</p>
+<h4 id="更能适应本身结构"><a href="#更能适应本身结构" class="headerlink" title="更能适应本身结构"></a>更能适应本身结构</h4><p>引入跳接让模型自身有了更加“灵活”的结构，即在训练过程本身，模型可以选择在每一个部分是“更多进行卷积与非线性变换”还是“更多倾向于什么都不做”，抑或是将两者结合。模型在训练便可以自适应本身的结构</p>
+<h3 id="why-it-works"><a href="#why-it-works" class="headerlink" title="why it works"></a>why it works</h3><p>为什么残差学习是有效的，一般的观点是残差学习会更加简单</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-7.png"></p>
+<p>尝试从数学的角度来分析这个问题，首先残差单元可以表示为：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-4.svg"></p>
+<p>其中 xl 和 xl+1 分别表示的是第 l 个残差单元的输入和输出，注意每个残差单元一般包含多层结构。 F(x) 是残差函数，表示学习到的残差，而 h(x) 表示恒等映射， f(x) 是ReLU激活函数。基于上式，我们求得从浅层 l 到深层 L 的学习特征为：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-5.svg"></p>
+<p>利用链式规则，可以求得反向过程的梯度：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-6.svg"></p>
+<p>式子的第一个因子 <img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-7.svg"> 表示的损失函数到达 L 的梯度，小括号中的1表明短路机制可以无损地传播梯度，而另外一项残差梯度则需要经过带有weights的层，梯度不是直接传递过来的。残差梯度不会那么巧全为-1，而且就算其比较小，有1的存在也不会导致梯度消失。所以残差学习会更容易。要注意上面的推导并不是严格的证明。</p>
+<h2 id="实验验证"><a href="#实验验证" class="headerlink" title="实验验证"></a>实验验证</h2><h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p>ResNet网络参考了VGG19网络，在其基础上进行了修改，并通过短路机制加入了残差单元。变化主要体现在</p>
+<ul>
+<li>ResNet直接使用stride&#x3D;2的卷积做下采样，并且用global average pool层替换了全连接层。ResNet的一个重要设计原则是：当feature map大小降低一半时，feature map的数量增加一倍，这保持了网络层的复杂度。</li>
+<li>ResNet相比普通网络每两层间增加了短路机制，这就形成了残差学习，其中虚线表示feature map数量发生了改变。</li>
+</ul>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-8.png"></p>
+<h3 id="残差单元"><a href="#残差单元" class="headerlink" title="残差单元"></a>残差单元</h3><h4 id="解决输入输出维数不一致"><a href="#解决输入输出维数不一致" class="headerlink" title="解决输入输出维数不一致"></a>解决输入输出维数不一致</h4><p>维度不一致体现在两个层面：</p>
+<ul>
+<li><strong>空间上不一致</strong>，对此，只需要在跳接的部分给输入x加上一个简单的线性映射</li>
+<li><strong>深度上不一致</strong>，对此有两种解决方案<ul>
+<li>采用zero-padding增加维度，此时一般要先做一个downsamp，可以采用strde&#x3D;2的pooling，这样不会增加参数</li>
+<li>一般采用1x1的卷积升维或降维，这样会增加参数，也会增加计算量。</li>
+</ul>
+</li>
+</ul>
+<h4 id="减少参数"><a href="#减少参数" class="headerlink" title="减少参数"></a>减少参数</h4><p>对于深层的resnet，使用blockneck block减少参数</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-9.png"></p>
+<p>如右图，先使用1x1卷积降维后经过一个3x3卷积，最后再次经过1x1卷积升维至原维数</p>
+<h3 id="结果比对"><a href="#结果比对" class="headerlink" title="结果比对"></a>结果比对</h3><p>作者对比了18-layer和34-layer的网络效果，如图7所示。可以看到普通的网络出现退化现象，但是ResNet很好的解决了退化问题。</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-10.jpg"></p>
+<p>ResNet网络与其他网络在ImageNet上的对比结果，。可以看到ResNet-152其误差降到了4.49%，当采用集成模型后，误差可以降到3.57%。且随着深度的加大，误差也在随之降低</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/2022-4-5-11.jpg"></p>
+<p><strong>之后会补作者2016年所做的关于不同残差结构的实验</strong></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/">论文笔记-U-net&U-net++</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HLK | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
