@@ -13,7 +13,7 @@
 
 
 
-<title>论文笔记-U-net | Secret Garden</title>
+<title>论文笔记-U-net&amp;U-net++ | Secret Garden</title>
 
 
 
@@ -193,7 +193,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">论文笔记-U-net</h1>
+            <h1 class="post-title">论文笔记-U-net&amp;U-net++</h1>
             
                 <div class="post-meta">
                     
@@ -211,7 +211,7 @@
         </header>
 
         <div class="post-content">
-            <h1 id="论文笔记-U-net"><a href="#论文笔记-U-net" class="headerlink" title="论文笔记-U-net"></a>论文笔记-U-net</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Unet是在FCN基础上提出的一种应用于医学影响的分割网络。医学影像的特点是1.数据集小   2.单张图片大</p>
+            <h1 id="U-net"><a href="#U-net" class="headerlink" title="U-net"></a>U-net</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Unet是在FCN基础上提出的一种应用于医学影响的分割网络。医学影像的特点是1.数据集小   2.单张图片大</p>
 <blockquote>
 <p>However, in many visual tasks, especially in biomedical image processing, the desired output should include localization, i.e., a class label is supposed to be assigned to each pixel. Moreover, thousands of training images are usually beyond reach in biomedical tasks  </p>
 </blockquote>
@@ -252,6 +252,14 @@
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上大概就是我在读完U-Net: Convolutional Networks for Biomedical Image Segmentation这篇论文后的收获与体会了，感谢<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41630455/article/details/116635526">https://blog.csdn.net/weixin_41630455/article/details/116635526</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/370931792">https://zhuanlan.zhihu.com/p/370931792</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/touch_dream/article/details/68939134">https://blog.csdn.net/touch_dream/article/details/68939134</a><br>等博客的博主，它们给我对论文的理解带来了非常大的帮助。</p>
+<h1 id="U-net-1"><a href="#U-net-1" class="headerlink" title="U-net++"></a>U-net++</h1><p>在开头先挂上一篇原文作者写的关于这篇论文的文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44958351">研习U-Net - 知乎</a></p>
+<h2 id="卷积块"><a href="#卷积块" class="headerlink" title="卷积块"></a>卷积块</h2><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-10.png"></p>
+<p>U-net++的思想比较简单，集作者认为原网络中长链接skip-connection的两个层数之间的语意信息可能存在较大的差异而增大了skip-connection的难度，那么，问题在于，该如何知道某一解码器产生的feature map该与哪一深度的编码器产生的feature map链接呢，如何判断它们产生的语意信息是否相近呢</p>
+<p>作者给出的答案是，让网络自己学习</p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-11.png"></p>
+<p>以X（0，4）为例，在U-net中，X（0，0）产生一次skip-connection，而在U-net++中，则是与X（0，0）到X（0，3）都产生skip-connection，而后用一次卷积操作来由网络自己决定（学习）如何融合</p>
+<h2 id="deep-supervision"><a href="#deep-supervision" class="headerlink" title="deep-supervision"></a>deep-supervision</h2><p>深监督的目的是剪枝，即在X（0，1），X（0，2），X（0，3），X（0，4）后都加上1*1的卷积核，产生相应的分类图</p>
+<p>在训练过程中（若干次迭代后），如果V2或V3的效果就已经做够好了，就可以将之后的部分剪掉来大幅减少参数数目</p>
 
         </div>
 
