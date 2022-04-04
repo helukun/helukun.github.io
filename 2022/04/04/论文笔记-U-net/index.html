@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HLK">
+
+
+
+
+
+<title>论文笔记-U-net | Secret Garden</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Hexi&#39;s Secret Garden</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Hexi&#39;s Secret Garden</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">论文笔记-U-net</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HLK</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 4, 2022&nbsp;&nbsp;12:43:30</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="论文笔记-U-net"><a href="#论文笔记-U-net" class="headerlink" title="论文笔记-U-net"></a>论文笔记-U-net</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Unet是在FCN基础上提出的一种应用于医学影响的分割网络。医学影像的特点是1.数据集小   2.单张图片大</p>
+<blockquote>
+<p>However, in many visual tasks, especially in biomedical image processing, the desired output should include localization, i.e., a class label is supposed to be assigned to each pixel. Moreover, thousands of training images are usually beyond reach in biomedical tasks  </p>
+</blockquote>
+<p>数据集小的问题造成的问题自不用多说，单张图片大所带来的问题是对显存的需求急剧升高</p>
+<h2 id="镜像填充"><a href="#镜像填充" class="headerlink" title="镜像填充"></a>镜像填充</h2><p>为了解决这两个问题，相比于FCN的直接输入整张图片，U-net采用了overlap-tile的策略，即将很大的图片分割为一块一块较小的图片（388*388piexls）后进行训练</p>
+<p>但我们注意到网络结构图中输入图片的大小为572·572piexls，这是因为U-net的卷积操作是没有padding的，所以每一次卷积操作过后，图片都会丢失边缘像素信息，表现为图片尺寸减小，所以，为了使输出图片尺寸为388·388piexls，要将原本的裁剪图片padding为572*572pixels大小，而相较于FCN的直接padding0，U-net采取的方法是镜像padding，将原图的边缘作为内容镜像填充<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-1.png"></p>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p>了解完这些后，我们把目光放在U-net的网络结构中，原图已经表达的比较清晰了，再此补充一些细节</p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-2.png"></p>
+<p>1.在向下采样（左半区）的过程中，每次pooling后的第一次卷积操作将特征数*2，而在向上的过程中，每次反卷积后的第一次卷积操作将特征数&#x2F;2</p>
+<p>2.浅层的feature map包含更多where的信息，而深层的feature map包含更多what的信息，为了兼具二者，需要结合浅层的深层的feature map，而相较于FCN中简单直接的加操作，U-net中使用的是concatenation操作，即拼接操作，up-conv操作中将特征数减半，然后与对应的下采样层中裁剪过后的feature-map拼接</p>
+<p>这里引用blog中的话</p>
+<blockquote>
+<p><strong>特征融合程度区分</strong>，fcn最多融合到8s。而Unet对所有上采样的特征图与原图进行了融合，融合了更多的尺度。（如图U型，左右对称的）  </p>
+<p><strong>特征融合方式不同</strong>，fcn融合的时候采用了+法，将特征图上的element进行相加。而unet用了concat的方法在channel维度上进行了堆叠。（老师的说法是，unet由于overlap的策略网络计算更高效了，而concat增加了channel也就是增加了计算量在这里是可以接受的）  </p>
+</blockquote>
+<p>3.最后一层使用1*1的卷积代替全连接层</p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p>U-net的损失函数也是有一些地方需要注意的，如下</p>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-3.png"></p>
+<p>其中<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-4.png"><br>部分即softmax的log似然代价函数的化简</p>
+<p>!<img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-5.png"></p>
+<p>而w（x），原文中的解释是</p>
+<blockquote>
+<p>w : Ω → R is a weight map that we introduced to give some pixels more importance in the training.  </p>
+</blockquote>
+<p>再次引用blog中原话（偷懒）</p>
+<blockquote>
+<p>医疗影像数据样本有一个问题就是数据不均衡的问题。我们发现医疗影像的背景像素在图中的占比是非常小的。老师在课上讲的解决方式是像这样的数据不均衡问题直接在loss上做文章。我们结合论文看一下具体的做法。我们利用了一个加权的loss，其中背景loss分配了一个大的权重  </p>
+</blockquote>
+<p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-6.png"></p>
+<p>后半部分计算式的作用是提高细胞间边界的像素所占的权重，那前面的wc的意义是什么呢，博主的叙述是</p>
+<blockquote>
+<p>如下图是实现权重的公式。这里有个疑问点是w-c的数据是如何计算的，文章中对w0和sigma做了明确的定义。w-c我后来问了老师，老师也查了下相关资料做了一些猜想（由于老师查了官网也没有提及wc的具体计算方法）<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/371676082%E3%80%82%E5%90%8E%E6%9D%A5%E4%B9%9F%E6%9C%89%E5%90%8C%E5%AD%A6%E6%95%B0%E4%BA%86%E4%B8%8Bfig.3c%EF%BC%8C%E7%99%BD%E7%82%B9_%E9%BB%91%E7%82%B9%E2%89%881.46%EF%BC%8C%E9%BB%91%E8%89%B2%E6%9C%80%E7%BA%A4%E7%BB%86%E7%9A%84%E5%9C%B0%E6%96%B9%E6%98%AF1%E5%83%8F%E7%B4%A0%E5%AE%BD%EF%BC%8C%E4%BB%A3%E5%85%A5%E5%85%AC%E5%BC%8F%E5%B0%B1%E6%98%AF1.5">https://zhuanlan.zhihu.com/p/371676082。后来也有同学数了下fig.3c，白点_黑点≈1.46，黑色最纤细的地方是1像素宽，代入公式就是1.5</a> + 10 * exp(-(1+1)2 &#x2F; 2&#x2F;5&#x2F;5)  ≈ 10.7，目测fig.3d的标尺最大值也是10.7；而且，fig4d中面积较大的浅蓝色，目测对应标尺的1.46。可能wc就是训练集所有白点_黑点？公式只是针对细胞外的像素，也就是细胞间隙的那些像素的。所以在论文的Fig.3的d图中，只有细胞外的像素对应的权重是渐变的。而细胞内的像素对应的权重取值为1。综合一下我的理解是w-c就是一个数值，只不过c会有不同取值，c的取值和训练集的语义类别相关。如果这个语义类别在总像素总占比小那么w-c这个值就大，反之则小。w-c是用来平衡类别的差异的权重，而公式的后半段是用来加强边界像素误差的权重。  </p>
+</blockquote>
+<p>我认为这也是原作者想要表达的含义</p>
+<h2 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h2><p>医学图像中，细胞等的形变等是常有之事，论文作者使用图像的弹性变化进行增强，既一定程度上解决了图像样本少的问题，也增强了网络的鲁棒性</p>
+<h2 id="其他细节"><a href="#其他细节" class="headerlink" title="其他细节"></a>其他细节</h2><h3 id="权值初始化"><a href="#权值初始化" class="headerlink" title="权值初始化"></a>权值初始化</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-7.png"><br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-8.png"></p>
+<h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-9.png"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上大概就是我在读完U-Net: Convolutional Networks for Biomedical Image Segmentation这篇论文后的收获与体会了，感谢<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41630455/article/details/116635526">https://blog.csdn.net/weixin_41630455/article/details/116635526</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/370931792">https://zhuanlan.zhihu.com/p/370931792</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/touch_dream/article/details/68939134">https://blog.csdn.net/touch_dream/article/details/68939134</a><br>等博客的博主，它们给我对论文的理解带来了非常大的帮助。</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/">论文笔记-deeplab</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HLK | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
