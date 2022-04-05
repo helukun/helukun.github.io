@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="HLK">
+
+
+
+
+
+<title>Secret Garden</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Hexi&#39;s Secret Garden</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Hexi&#39;s Secret Garden</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title"></h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">HLK</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 5, 2022&nbsp;&nbsp;11:29:01</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="论文笔记-SENet"><a href="#论文笔记-SENet" class="headerlink" title="论文笔记-SENet"></a>论文笔记-SENet</h1><h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><h3 id="注意力模型"><a href="#注意力模型" class="headerlink" title="注意力模型"></a>注意力模型</h3><p>注意力机制：<br>Attention机制通俗的讲就是把注意力集中放在重要的点上,而忽略其他不重要的因素。其中重要程度的判断取决于应用场景。</p>
+<p>例如，人类的视觉注意力，使得我们能够在图片的“低解析度”背景下，更加关注具有“高解析度或辨识度”（High resolution)的特定区域（如黄色区域中狗的耳朵），然后逐渐调整焦点，移动到另一只耳朵，眼睛，鼻子等，最后进行推断整张图片的信息。</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-1.png"></p>
+<p>深度学习中的注意力机制从本质上讲和人类的选择性视觉注意力机制类似，核心目标也是从众多信息中选择出对当前任务目标更关键的信息。</p>
+<p>注意力机制包含两个部分：</p>
+<ul>
+<li>注意力机制需要决定整段输入的哪个部分需要更加关注</li>
+<li>从关键的部分进行特征提取，得到重要的信息</li>
+</ul>
+<p>注意力机制可以帮助模型为输入X的各个部分分配不同的权重，提取更关键、重要信息,使模型能够做出更准确的判断，同时不会给模型的计算和存储带来更多的消耗。而在通道的尺度上引入注意力模型，就是SEnet解决的问题</p>
+<p>换句话来说，只捕捉图像中对给定任务最显著的属性，从而提高网络的性能</p>
+<h2 id="Squeeze-and-Excitation-block"><a href="#Squeeze-and-Excitation-block" class="headerlink" title="Squeeze-and-Excitation block"></a>Squeeze-and-Excitation block</h2><p>SE模块主要包括Squeeze和Excitation两个操作</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-2.png"></p>
+<h3 id="Squeeze"><a href="#Squeeze" class="headerlink" title="Squeeze"></a>Squeeze</h3><p>按空间维度来进行特征压缩，将每个二维的特征通道一维向量，该向量某种程度上具有全局的感受野，并且输出的维度和输入的特征通道数相匹配。它表征着在特征通道上响应的全局分布，而且使得靠近输入的层也可以获得全局的感受野</p>
+<p>由于卷积只是在一个局部空间内进行操作，很难获得足够的信息来提取channel之间的关系，对于网络中前面的层这更严重，因为感受野比较小。为了，SENet提出Squeeze操作，将一个channel上整个空间特征编码为一个全局特征，采用global average pooling来实现（原则上也可以采用更复杂的聚合策略）:</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-3.svg"></p>
+<h3 id="Excitation"><a href="#Excitation" class="headerlink" title="Excitation"></a>Excitation</h3><p>Sequeeze操作得到了全局描述特征，我们接下来需要另外一种运算来抓取channel之间的关系。这个操作需要满足两个准则：</p>
+<ul>
+<li>首先要灵活，它要可以学习到各个channel之间的非线性关系；</li>
+<li>其次是学习的关系不是互斥的，因为这里允许多channel特征，而不是one-hot形式。</li>
+</ul>
+<p>基于此，这里采用sigmoid形式的gating机制(这部分的原因还不是很明白，需要再去参考一下gating机制的特点与作用)：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-4.svg"></p>
+<p>其中 <img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-5.svg"> 。为了降低模型复杂度以及提升泛化能力，这里采用包含两个全连接层的bottleneck结构，其中第一个FC层起到降维的作用，降维系数为r是个超参数，然后采用ReLU激活。最后的FC层恢复原始的维度。</p>
+<p>最后将学习到的各个channel的激活值（sigmoid激活，值0~1）乘以U上的原始特征：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-6.svg"></p>
+<p>整个操作可以看成学习到了各个channel的权重系数，从而使得模型对各个channel的特征更有辨别能力</p>
+<h2 id="方法验证"><a href="#方法验证" class="headerlink" title="方法验证"></a>方法验证</h2><h3 id="SE模块在Inception和ResNet上的应用"><a href="#SE模块在Inception和ResNet上的应用" class="headerlink" title="SE模块在Inception和ResNet上的应用"></a>SE模块在Inception和ResNet上的应用</h3><p>SE模块的灵活性在于它可以直接应用现有的网络结构中。这里以Inception和ResNet为例。对于Inception网络，没有残差结构，这里对整个Inception模块应用SE模块。对于ResNet，SE模块嵌入到残差结构中的残差学习分支中。具体如下图所示：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-7.png"></p>
+<p>同样地，SE模块也可以应用在其它网络结构，如ResNetXt，Inception-ResNet，MobileNet和ShuffleNet中。这里给出SE-ResNet-50和SE-ResNetXt-50的具体结构，如下表所示：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-8.png"></p>
+<h4 id="计算量"><a href="#计算量" class="headerlink" title="计算量"></a>计算量</h4><p>增加了SE模块后，模型参数以及计算量都会增加，这里以SE-ResNet-50为例，对于模型参数增加量为： </p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-9.svg"></p>
+<p>其中r为降维系数，S表示stage数量， Cs 为第s个stage的通道数， Ns 为第s个stage的重复block量。当r&#x3D;16时，SE-ResNet-50只增加了约10%的参数量。但计算量（GFLOPS）却增加不到1%。</p>
+<h3 id="模型效果"><a href="#模型效果" class="headerlink" title="模型效果"></a>模型效果</h3><p>为了验证SE模块的作用，作者在其它流行网络如ResNet和VGG中引入SE模块，测试其在ImageNet上的效果，如下表所示：</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-10.png"></p>
+<p>可以看到所有网络在加入SE模块后分类准确度均有一定的提升。此外，作者还测试了SE模块在轻量级网络MobileNet和ShuffleNet上的效果，如下表所示，同样有效果提升。</p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-11.jpg"></p>
+<h2 id="how-it-works"><a href="#how-it-works" class="headerlink" title="how it works"></a>how it works</h2><h3 id="Excitation的作用"><a href="#Excitation的作用" class="headerlink" title="Excitation的作用"></a>Excitation的作用</h3><p>在论文最后，作者对比不同类(金鱼、帕格、平面和悬崖)之间做了一些实验，阐述了Excitation在网络中不同层中的作用。 </p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-12.png"></p>
+<p><img src="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-SENet/2022-4-5-11.png"></p>
+<p>论文对SENets中浅，中，深，三个层次的Excitation作用提出以下看法：</p>
+<ul>
+<li>不同类别的分布在较低层中几乎相同，例如SE_2_3，表明在网络的最初阶段特征通道的重要性很可能由不同的类别共享。 </li>
+<li>当网络层数较深时，每个通道的值变得更具类别特定性，因为不同类别对特征的判别性值具有不同的偏好，例如，SE_4_6和SE_5_1这两个观察结果与以前的研究结果一致，即低层特征通常更普遍（即分类中不可知的类别），而高层特征具有更高的特异性。</li>
+<li>在网络的最后阶段观察到呈现出朝向饱和状态的趋势，例如SE_5_2，其中大部分激活接近于1，其余激活接近于0。在所有激活值均为1的点处，SE块退化为恒等映射。。这表明SE 5 2和SE 5 3在向网络提供重新校准方面不如以前的模块重要。而结果表明，通过移除最后阶段的SE块，可以显著减少额外的参数计数，而性能仅略有损失。</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/04/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Resnet/">论文笔记-Resnet</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© HLK | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
