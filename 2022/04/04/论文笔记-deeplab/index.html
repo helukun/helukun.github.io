@@ -225,7 +225,7 @@
 <p>使用空洞卷积前<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-5.png"></p>
 <p>使用空洞卷积后<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-deeplab/2022-4-1-6.png"><br>最后得到的感受野大小相同，这也使得可以使用VGG-16的训练好了的权重进行初始化</p>
 <h3 id="CRF"><a href="#CRF" class="headerlink" title="CRF"></a>CRF</h3><p>文章采用超像素表示，实质上是将定位任务委托给低级分割方法，通过耦合DCNN的识别能力和完全连接的CRF的细粒度定位精度来恢复对象边界。以解决大感受野与不变形带来的位置问题</p>
-<p>由于在deeplabV3后就将这一部分舍弃了，加之我在传统ml领域知识的贫乏（会补的会补的别骂了别骂了），所以对于这一部分并未深究，留待之后学习条件随机场时再做考量。</p>
+<p>由于在deeplabV3后就将这一部分舍弃了，加之我在传统ml领域知识的贫乏，所以对于这一部分并未深究，留待之后学习条件随机场时再做考量。</p>
 <h2 id="方法验证"><a href="#方法验证" class="headerlink" title="方法验证"></a>方法验证</h2><h3 id="experiment"><a href="#experiment" class="headerlink" title="experiment"></a>experiment</h3><p>DeepLab由DCNN和CRF组成，训练策略是分段训练，即DCNN的输出是CRF的一元势函数，在训练CRF时是固定的。在对DCNN做了fine-tune后，对CRF做交叉验证</p>
 <table>
 <thead>
