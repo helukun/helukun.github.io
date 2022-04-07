@@ -211,24 +211,31 @@
         </header>
 
         <div class="post-content">
-            <h1 id="U-net"><a href="#U-net" class="headerlink" title="U-net"></a>U-net</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Unet是在FCN基础上提出的一种应用于医学影响的分割网络。医学影像的特点是1.数据集小   2.单张图片大</p>
-<blockquote>
-<p>However, in many visual tasks, especially in biomedical image processing, the desired output should include localization, i.e., a class label is supposed to be assigned to each pixel. Moreover, thousands of training images are usually beyond reach in biomedical tasks  </p>
-</blockquote>
-<p>数据集小的问题造成的问题自不用多说，单张图片大所带来的问题是对显存的需求急剧升高</p>
-<h2 id="镜像填充"><a href="#镜像填充" class="headerlink" title="镜像填充"></a>镜像填充</h2><p>为了解决这两个问题，相比于FCN的直接输入整张图片，U-net采用了overlap-tile的策略，即将很大的图片分割为一块一块较小的图片（388*388piexls）后进行训练</p>
+            <h1 id="U-net"><a href="#U-net" class="headerlink" title="U-net"></a>U-net</h1><h2 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a>问题场景</h2><p>CNN在医学上的影像分割</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><ul>
+<li><p>CNN随着网络的深入，图像的位置信息缺失，这给语意分割带来了困难</p>
+</li>
+<li><p>另一方面，Unet是在FCN基础上提出的一种应用于医学影响的分割网络。医学影像带来的困难是 </p>
+<ul>
+<li>数据集小   </li>
+<li>单张图片大，致使对显存的需求急剧升高</li>
+</ul>
+</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="镜像填充"><a href="#镜像填充" class="headerlink" title="镜像填充"></a>镜像填充</h3><p>为了解决医学影像带来的困难，相比于FCN的直接输入整张图片，U-net采用了overlap-tile的策略，即将很大的图片分割为一块一块较小的图片（388*388piexls）后进行训练</p>
 <p>但我们注意到网络结构图中输入图片的大小为572·572piexls，这是因为U-net的卷积操作是没有padding的，所以每一次卷积操作过后，图片都会丢失边缘像素信息，表现为图片尺寸减小，所以，为了使输出图片尺寸为388·388piexls，要将原本的裁剪图片padding为572*572pixels大小，而相较于FCN的直接padding0，U-net采取的方法是镜像padding，将原图的边缘作为内容镜像填充<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-1.png"></p>
-<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p>了解完这些后，我们把目光放在U-net的网络结构中，原图已经表达的比较清晰了，再此补充一些细节</p>
+<h3 id="U形结构"><a href="#U形结构" class="headerlink" title="U形结构"></a>U形结构</h3><p>了解完这些后，我们把目光放在U-net的网络结构中，原图已经表达的比较清晰了，再此补充一些细节</p>
 <p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-2.png"></p>
 <p>1.在向下采样（左半区）的过程中，每次pooling后的第一次卷积操作将特征数*2，而在向上的过程中，每次反卷积后的第一次卷积操作将特征数&#x2F;2</p>
 <p>2.浅层的feature map包含更多where的信息，而深层的feature map包含更多what的信息，为了兼具二者，需要结合浅层的深层的feature map，而相较于FCN中简单直接的加操作，U-net中使用的是concatenation操作，即拼接操作，up-conv操作中将特征数减半，然后与对应的下采样层中裁剪过后的feature-map拼接</p>
-<p>这里引用blog中的话</p>
-<blockquote>
-<p><strong>特征融合程度区分</strong>，fcn最多融合到8s。而Unet对所有上采样的特征图与原图进行了融合，融合了更多的尺度。（如图U型，左右对称的）  </p>
-<p><strong>特征融合方式不同</strong>，fcn融合的时候采用了+法，将特征图上的element进行相加。而unet用了concat的方法在channel维度上进行了堆叠。（老师的说法是，unet由于overlap的策略网络计算更高效了，而concat增加了channel也就是增加了计算量在这里是可以接受的）  </p>
-</blockquote>
+<ul>
+<li><p><strong>特征融合程度区分</strong>，fcn最多融合到8s。而Unet对所有上采样的特征图与原图进行了融合，融合了更多的尺度。（如图U型，左右对称的）  </p>
+</li>
+<li><p><strong>特征融合方式不同</strong>，fcn融合的时候采用了+法，将特征图上的element进行相加。而unet用了concat的方法在channel维度上进行了堆叠。，unet由于overlap的策略网络计算更高效了，而concat增加了channel也就是增加了计算量在这里是可以接受的</p>
+</li>
+</ul>
 <p>3.最后一层使用1*1的卷积代替全连接层</p>
-<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p>U-net的损失函数也是有一些地方需要注意的，如下</p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>U-net的损失函数也是有一些地方需要注意的，如下</p>
 <p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-3.png"></p>
 <p>其中<br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-4.png"><br>部分即softmax的log似然代价函数的化简</p>
 <p>!<img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-5.png"></p>
@@ -246,20 +253,22 @@
 <p>如下图是实现权重的公式。这里有个疑问点是w-c的数据是如何计算的，文章中对w0和sigma做了明确的定义。w-c我后来问了老师，老师也查了下相关资料做了一些猜想（由于老师查了官网也没有提及wc的具体计算方法）<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/371676082%E3%80%82%E5%90%8E%E6%9D%A5%E4%B9%9F%E6%9C%89%E5%90%8C%E5%AD%A6%E6%95%B0%E4%BA%86%E4%B8%8Bfig.3c%EF%BC%8C%E7%99%BD%E7%82%B9_%E9%BB%91%E7%82%B9%E2%89%881.46%EF%BC%8C%E9%BB%91%E8%89%B2%E6%9C%80%E7%BA%A4%E7%BB%86%E7%9A%84%E5%9C%B0%E6%96%B9%E6%98%AF1%E5%83%8F%E7%B4%A0%E5%AE%BD%EF%BC%8C%E4%BB%A3%E5%85%A5%E5%85%AC%E5%BC%8F%E5%B0%B1%E6%98%AF1.5">https://zhuanlan.zhihu.com/p/371676082。后来也有同学数了下fig.3c，白点_黑点≈1.46，黑色最纤细的地方是1像素宽，代入公式就是1.5</a> + 10 * exp(-(1+1)2 &#x2F; 2&#x2F;5&#x2F;5)  ≈ 10.7，目测fig.3d的标尺最大值也是10.7；而且，fig4d中面积较大的浅蓝色，目测对应标尺的1.46。可能wc就是训练集所有白点_黑点？公式只是针对细胞外的像素，也就是细胞间隙的那些像素的。所以在论文的Fig.3的d图中，只有细胞外的像素对应的权重是渐变的。而细胞内的像素对应的权重取值为1。综合一下我的理解是w-c就是一个数值，只不过c会有不同取值，c的取值和训练集的语义类别相关。如果这个语义类别在总像素总占比小那么w-c这个值就大，反之则小。w-c是用来平衡类别的差异的权重，而公式的后半段是用来加强边界像素误差的权重。  </p>
 </blockquote>
 <p>我认为这也是原作者想要表达的含义</p>
-<h2 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h2><p>医学图像中，细胞等的形变等是常有之事，论文作者使用图像的弹性变化进行增强，既一定程度上解决了图像样本少的问题，也增强了网络的鲁棒性</p>
+<h3 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h3><p>医学图像中，细胞等的形变等是常有之事，论文作者使用图像的弹性变化进行增强，既一定程度上解决了图像样本少的问题，也增强了网络的鲁棒性</p>
 <h2 id="其他细节"><a href="#其他细节" class="headerlink" title="其他细节"></a>其他细节</h2><h3 id="权值初始化"><a href="#权值初始化" class="headerlink" title="权值初始化"></a>权值初始化</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-7.png"><br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-8.png"></p>
-<h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-9.png"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上大概就是我在读完U-Net: Convolutional Networks for Biomedical Image Segmentation这篇论文后的收获与体会了，感谢<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41630455/article/details/116635526">https://blog.csdn.net/weixin_41630455/article/details/116635526</a></p>
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/370931792">https://zhuanlan.zhihu.com/p/370931792</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/touch_dream/article/details/68939134">https://blog.csdn.net/touch_dream/article/details/68939134</a><br>等博客的博主，它们给我对论文的理解带来了非常大的帮助。</p>
-<h1 id="U-net-1"><a href="#U-net-1" class="headerlink" title="U-net++"></a>U-net++</h1><p>在开头先挂上一篇原文作者写的关于这篇论文的文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44958351">研习U-Net - 知乎</a></p>
-<h2 id="卷积块"><a href="#卷积块" class="headerlink" title="卷积块"></a>卷积块</h2><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-10.png"></p>
+<h2 id="方法验证"><a href="#方法验证" class="headerlink" title="方法验证"></a>方法验证</h2><h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-9.png"></p>
+<h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><p>作者在三个目标分割数据集上进行了相应的实验。并且有三种评价指标：</p>
+<h4 id="Pixel-error"><a href="#Pixel-error" class="headerlink" title="Pixel error"></a>Pixel error</h4><p>预测错误的像素点的个数除以总像素个数。对于二进制的labels，欧式距离和汉明距离结果相同。优点：简单 缺点：过分敏感，可能已经到达了较好的分割效果，却有很大的pixel error。</p>
+<h4 id="warping-error"><a href="#warping-error" class="headerlink" title="warping error"></a>warping error</h4><p>是一种segmention metric，基于数字拓扑领域概念，比较边界标签的另一种指标。当pixel error很大当分割效果更好可以引入warping error，主要用来衡量分割目标的拓扑形状效果。</p>
+<h4 id="Rand-error"><a href="#Rand-error" class="headerlink" title="Rand error"></a>Rand error</h4><p>两个数据聚类的相似性评价方法，改造之后用来衡量分割性能，因为分割可以看作是聚成类的像素。</p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-7-1.png"><br><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-7-2.png"></p>
+<h1 id="U-net-1"><a href="#U-net-1" class="headerlink" title="U-net++"></a>U-net++</h1><h2 id="卷积块"><a href="#卷积块" class="headerlink" title="卷积块"></a>卷积块</h2><p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-10.png"></p>
 <p>U-net++的思想比较简单，集作者认为原网络中长链接skip-connection的两个层数之间的语意信息可能存在较大的差异而增大了skip-connection的难度，那么，问题在于，该如何知道某一解码器产生的feature map该与哪一深度的编码器产生的feature map链接呢，如何判断它们产生的语意信息是否相近呢</p>
 <p>作者给出的答案是，让网络自己学习</p>
 <p><img src="/2022/04/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-U-net/2022-4-4-11.png"></p>
 <p>以X（0，4）为例，在U-net中，X（0，0）产生一次skip-connection，而在U-net++中，则是与X（0，0）到X（0，3）都产生skip-connection，而后用一次卷积操作来由网络自己决定（学习）如何融合</p>
 <h2 id="deep-supervision"><a href="#deep-supervision" class="headerlink" title="deep-supervision"></a>deep-supervision</h2><p>深监督的目的是剪枝，即在X（0，1），X（0，2），X（0，3），X（0，4）后都加上1*1的卷积核，产生相应的分类图</p>
 <p>在训练过程中（若干次迭代后），如果V2或V3的效果就已经做够好了，就可以将之后的部分剪掉来大幅减少参数数目</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44958351">研习U-Net - 知乎</a></p>
 
         </div>
 
